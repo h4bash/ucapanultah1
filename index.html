@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎉 Selamat Ulang Tahun! 🎂</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #ff6b6b;
+            --secondary-color: #4ecdc4;
+            --accent-color: #ffe66d;
+            --dark-color: #2d3436;
+            --light-color: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* View Transitions */
+        ::view-transition-old(root),
+        ::view-transition-new(root) {
+            animation: none;
+        }
+
+        ::view-transition-old(*) {
+            animation: fade-out 0.5s ease-out;
+        }
+
+        ::view-transition-new(*) {
+            animation: fade-in 0.5s ease-out;
+        }
+
+        @keyframes fade-out {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .cake-loader {
+            width: 100px;
+            height: 100px;
+            position: relative;
+        }
+
+        .cake-loader::before {
+            content: '🎂';
+            font-size: 60px;
+            position: absolute;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Main Container */
+        .container {
+            min-height: 100vh;
+            display: none;
+            position: relative;
+        }
+
+        .container.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* View 1: Welcome Screen */
+        .welcome-view {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .welcome-title {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: slideInDown 1s ease-out;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .welcome-subtitle {
+            font-size: 1.5rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 40px;
+            animation: slideInUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .start-btn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        /* View 2: Celebration Screen */
+        .celebration-view {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .birthday-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            transform: perspective(1000px) rotateY(0deg);
+            transition: transform 0.6s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .birthday-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .birthday-card:hover {
+            transform: perspective(1000px) rotateY(5deg) scale(1.02);
+        }
+
+        .celebration-title {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .age-display {
+            font-size: 4rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 20px 0;
+            animation: countUp 2s ease-out;
+        }
+
+        @keyframes countUp {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* View 3: Memories */
+        .memories-view {
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .memories-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .memories-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .memory-card {
+            background: rgba(255,255,255,0.9);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .memory-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .memory-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .memory-text {
+            color: var(--dark-color);
+            font-size: 1.1rem;
+        }
+
+        /* View 4: Wishes */
+        .wishes-view {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .wishes-container {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        .wishes-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+        }
+
+        .wish-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            opacity: 0;
+            animation: slideInLeft 0.5s forwards;
+        }
+
+        .wish-item:nth-child(even) {
+            animation: slideInRight 0.5s forwards;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .nav-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Confetti Animation */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-color);
+            position: absolute;
+            animation: confetti-fall 3s linear infinite;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        /* Balloons */
+        .balloon {
+            position: fixed;
+            width: 80px;
+            height: 100px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            opacity: 0.8;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .balloon::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 60px;
+            background: rgba(0,0,0,0.2);
+            left: 50%;
+            bottom: -60px;
+            transform: translateX(-50%);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Fireworks */
+        .firework {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: firework-explode 1s ease-out forwards;
+        }
+
+        @keyframes firework-explode {
+            0% {
+                transform: translate(0, 0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--x), var(--y));
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .welcome-title {
+                font-size: 2rem;
+            }
+            
+            .welcome-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .celebration-title {
+                font-size: 2rem;
+            }
+            
+            .age-display {
+                font-size: 3rem;
+            }
+            
+            .memory-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            transition: all 0.1s;
+            z-index: 9999;
+            mix-blend-mode: difference;
+        }
+
+        .cursor.active {
+            transform: scale(2);
+            background: rgba(255,255,255,0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="cake-loader"></div>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor" id="cursor"></div>
+
+    <!-- View 1: Welcome -->
+    <div class="container active" id="welcomeView">
+        <div class="welcome-view">
+            <h1 class="welcome-title">🎉 Selamat Ulang Tahun! 🎂</h1>
+            <p class="welcome-subtitle">Hari spesial untuk orang spesial</p>
+            <button class="start-btn" onclick="navigateTo('celebration')">Mulai Perayaan</button>
+        </div>
+    </div>
+
+    <!-- View 2: Celebration -->
+    <div class="container" id="celebrationView">
+        <div class="celebration-view">
+            <div class="birthday-card">
+                <h2 class="celebration-title">🎊 Happy Birthday! 🎊</h2>
+                <div class="age-display" id="ageDisplay">25</div>
+                <p style="font-size: 1.2rem; color: #666; margin: 20px 0;">
+                    Semoga di usia yang baru ini semua impianmu terwujud
+                </p>
+                <div style="font-size: 3rem; margin: 20px 0;">
+                    🎈🎁🎂🎉
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View 3: Memories -->
+    <div class="container" id="memoriesView">
+        <div class="memories-container">
+            <h2 class="memories-title">✨ Kenangan Indah ✨</h2>
+            <div class="memory-grid">
+                <div class="memory-card" onclick="animateCard(this)">
+                    <div class="memory-icon">🌟</div>
+                    <p class="memory-text">Pencapaian Luar Biasa</p>
+                </div>
+                <div class="memory-card" onclick="animateCard(this)">
+                    <div class="memory-icon">🎯</div>
+                    <p class="memory-text">Target Tercapai</p>
+                </div>
+                <div class="memory-card" onclick="animateCard(this)">
+                    <div class="memory-icon">💪</div>
+                    <p class="memory-text">Perjuangan Berhasil</p>
+                </div>
+                <div class="memory-card" onclick="animateCard(this)">
+                    <div class="memory-icon">🏆</div>
+                    <p class="memory-text">Kemenangan Manis</p>
+                </div>
+                <div class="memory-card" onclick="animateCard(this)">
+                    <div class="memory-icon">🌈</div>
+                    <p class="memory-text">Momen Bahagia</p>
+                </div>
+                <div class="memory-card" onclick="animateCard(this)">
+                    <div class="memory-icon">❤️</div>
+                    <p class="memory-text">Kasih Sayang Tulus</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View 4: Wishes -->
+    <div class="container" id="wishesView">
+        <div class="wishes-container">
+            <h2 class="wishes-title">🌟 Doa & Harapan 🌟</h2>
+            <div class="wish-item">Semoga panjang umur dan sehat selalu</div>
+            <div class="wish-item">Rezeki melimpah dan berkah</div>
+            <div class="wish-item">Semua cita-cita tercapai</div>
+            <div class="wish-item">Dikelilingi orang-orang yang menyayangimu</div>
+            <div class="wish-item">Kebahagiaan selalu menyertaimu</div>
+            <div class="wish-item">Sukses dalam segala hal</div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-buttons">
+        <button class="nav-btn active" onclick="navigateTo('welcome')">🏠</button>
+        <button class="nav-btn" onclick="navigateTo('celebration')">🎂</button>
+        <button class="nav-btn" onclick="navigateTo('memories')">📸</button>
+        <button class="nav-btn" onclick="navigateTo('wishes')">💌</button>
+    </div>
+
+    <script>
+        // Initialize
+        let currentView = 'welcome';
+        let confettiInterval;
+        let balloonInterval;
+
+        // Hide loading screen
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+                createConfetti();
+                createBalloons();
+                animateAge();
+            }, 1500);
+        });
+
+        // Custom cursor
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX - 10 + 'px';
+            cursor.style.top = e.clientY - 10 + 'px';
+        });
+
+        document.addEventListener('mousedown', () => {
+            cursor.classList.add('active');
+        });
+
+        document.addEventListener('mouseup', () => {
+            cursor.classList.remove('active');
+        });
+
+        // Navigation with View Transitions
+        async function navigateTo(view) {
+            if (!document.startViewTransition) {
+                // Fallback for browsers without View Transitions API
+                showView(view);
+                return;
+            }
+
+            const transition = document.startViewTransition(() => {
+                showView(view);
+            });
+
+            await transition.finished;
+            currentView = view;
+            updateNavButtons();
+            
+            // Trigger special effects for specific views
+            if (view === 'celebration') {
+                triggerFireworks();
+            } else if (view === 'wishes') {
+                animateWishes();
+            }
+        }
+
+        function showView(view) {
+            document.querySelectorAll('.container').forEach(container => {
+                container.classList.remove('active');
+            });
+            document.getElementById(view + 'View').classList.add('active');
+        }
+
+        function updateNavButtons() {
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const viewIndex = ['welcome', 'celebration', 'memories', 'wishes'].indexOf(currentView);
+            if (viewIndex !== -1) {
+                document.querySelectorAll('.nav-btn')[viewIndex].classList.add('active');
+            }
+        }
+
+        // Create confetti
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#a8e6cf', '#ff8b94'];
+            
+            confettiInterval = setInterval(() => {
+                if (Math.random() > 0.7) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 5000);
+                }
+            }, 200);
+        }
+
+        // Create balloons
+        function createBalloons() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#a8e6cf'];
+            
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const balloon = document.createElement('div');
+                    balloon.className = 'balloon';
+                    balloon.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    balloon.style.left = Math.random() * 90 + 5 + '%';
+                    balloon.style.bottom = '-120px';
+                    balloon.style.animationDelay = i * 0.5 + 's';
+                    document.body.appendChild(balloon);
+                    
+                    // Animate balloon floating up
+                    let pos = -120;
+                    const floatInterval = setInterval(() => {
+                        pos += 2;
+                        balloon.style.bottom = pos + 'px';
+                        if (pos > window.innerHeight + 120) {
+                            clearInterval(floatInterval);
+                            balloon.remove();
+                        }
+                    }, 50);
+                }, i * 1000);
+            }
+        }
+
+        // Trigger fireworks
+        function triggerFireworks() {
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => createFirework(), i * 500);
+            }
+        }
+
+        function createFirework() {
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight / 2;
+            const colors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#a8e6cf', '#ff8b94'];
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'firework';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                const angle = (Math.PI * 2 * i) / 30;
+                const velocity = 100 + Math.random() * 100;
+                particle.style.setProperty('--x', Math.cos(angle) * velocity + 'px');
+                particle.style.setProperty('--y', Math.sin(angle) * velocity + 'px');
+                
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 1000);
+            }
+        }
+
+        // Animate age counting
+        function animateAge() {
+            const ageDisplay = document.getElementById('ageDisplay');
+            if (!ageDisplay) return;
+            
+            let age = 0;
+            const targetAge = 25;
+            const increment = targetAge / 50;
+            
+            const countInterval = setInterval(() => {
+                age += increment;
+                if (age >= targetAge) {
+                    age = targetAge;
+                    clearInterval(countInterval);
+                }
+                ageDisplay.textContent = Math.floor(age);
+            }, 30);
+        }
+
+        // Animate memory cards
+        function animateCard(card) {
+            card.style.animation = 'none';
+            setTimeout(() => {
+                card.style.animation = 'pulse 0.5s ease';
+            }, 10);
+            
+            // Create mini fireworks on click
+            const rect = card.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+            
+            for (let i = 0; i < 10; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'firework';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                
+                const angle = (Math.PI * 2 * i) / 10;
+                const velocity = 50;
+                particle.style.setProperty('--x', Math.cos(angle) * velocity + 'px');
+                particle.style.setProperty('--y', Math.sin(angle) * velocity + 'px');
+                
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 1000);
+            }
+        }
+
+        // Animate wishes
+        function animateWishes() {
+            const wishes = document.querySelectorAll('.wish-item');
+            wishes.forEach((wish, index) => {
+                wish.style.animationDelay = index * 0.2 + 's';
+            });
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            const views = ['welcome', 'celebration', 'memories', 'wishes'];
+            const currentIndex = views.indexOf(currentView);
+            
+            if (e.key === 'ArrowRight' && currentIndex < views.length - 1) {
+                navigateTo(views[currentIndex + 1]);
+            } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                navigateTo(views[currentIndex - 1]);
+            }
+        });
+
+        // Touch/swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const views = ['welcome', 'celebration', 'memories', 'wishes'];
+            const currentIndex = views.indexOf(currentView);
+            
+            if (touchEndX < touchStartX - 50 && currentIndex < views.length - 1) {
+                navigateTo(views[currentIndex + 1]);
+            }
+            if (touchEndX > touchStartX + 50 && currentIndex > 0) {
+                navigateTo(views[currentIndex - 1]);
+            }
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            clearInterval(confettiInterval);
+            clearInterval(balloonInterval);
+        });
+    </script>
+</body>
+</html>
